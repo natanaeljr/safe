@@ -1,0 +1,65 @@
+language: c++
+
+matrix:
+  include:
+    - os: linux
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+          packages:
+            - g++-5
+      env:
+         - MATRIX_EVAL="CC=gcc-5 && CXX=g++-5"
+
+    - os: linux
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+          packages:
+            - g++-6
+      env:
+        - MATRIX_EVAL="CC=gcc-6 && CXX=g++-6"
+
+    - os: linux
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+          packages:
+            - g++-7
+      env:
+        - MATRIX_EVAL="CC=gcc-7 && CXX=g++-7"
+
+    - os: linux
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+          packages:
+            - g++-8
+      env:
+        - MATRIX_EVAL="CC=gcc-8 && CXX=g++-8"
+
+    - os: osx
+      osx_image: xcode8
+
+    - os: osx
+      osx_image: xcode9
+
+    - os: osx
+      osx_image: xcode10
+        
+before_install:
+    - eval "${MATRIX_EVAL}"
+
+script:
+  - mkdir -p $HOME/orca-install
+  - mkdir build ; cd build
+  - cmake .. -DCMAKE_CXX_FLAGS="-w" -DCMAKE_INSTALL_PREFIX=$HOME/orca-install
+  - cmake --build . --config Release
+  - cmake --build . --target install
+
+after_success:
+  - $HOME/orca-install/lib/orca/examples/01-simple_controller $HOME/orca-install/share/orca/examples/resources/lwr.urdf -l debug
