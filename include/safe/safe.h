@@ -64,6 +64,10 @@ namespace safe {
 			return *ReadAccess<LockableValue, LockType>(m_value);
 		}
 
+		LockableValue& get() const noexcept {
+			return m_value;
+		}
+
 	private:
 		LockableValue m_value;
 	};
